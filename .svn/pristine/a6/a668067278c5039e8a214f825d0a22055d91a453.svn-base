@@ -1,0 +1,35 @@
+//
+//  BLDLineNotifyViewController.h
+//  BloodLine
+//
+//  Created by Avinash Kawade on 27/02/14.
+//  Copyright (c) 2014 Avinash Kawade. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "GAITrackedViewController.h"
+
+@interface BLDLineNotifyViewController : GAITrackedViewController{
+    
+    NSMutableArray *radiusListArray;
+    BOOL checkboxSelected;
+    
+}
+@property (strong, nonatomic)IBOutlet UITextField *phoneNumber;
+@property (strong, nonatomic)IBOutlet UIButton *dropDownBtn;
+@property (strong, nonatomic)IBOutlet UITextField *selectedBloodType;
+@property (strong, nonatomic)IBOutlet UISwitch  *prioritySwitch;
+
+@property (strong, nonatomic)IBOutlet UITableView *srchBloodTypeList;
+@property(nonatomic,retain)NSMutableArray *bloodTypeListArray;
+@property(nonatomic,retain)NSMutableDictionary *bloodTypeListDictionay;
+
+@property (strong, nonatomic)IBOutlet UITextField *selectedRadius;
+@property (strong, nonatomic)IBOutlet UIButton *sendNotificationButton;
+
+-(IBAction)dropDownClicked:(id)sender;
+-(IBAction)sendNotification:(id)sender;
+-(IBAction)checkboxButton:(id)sender;
+
+
+@end

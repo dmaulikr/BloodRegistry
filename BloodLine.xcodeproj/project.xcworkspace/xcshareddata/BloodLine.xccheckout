@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>CD1B6B8C-C24F-4A8A-AD1C-119AFAF6428E</string>
+	<key>IDESourceControlProjectName</key>
+	<string>BloodLine</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>d59a5a15-0c7b-4184-96a1-b83302628491++1656</key>
+		<string>https://subversion.assembla.com/svn/bloodregistry/trunk/BloodRegistryIphone</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>BloodLine.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>d59a5a15-0c7b-4184-96a1-b83302628491++1656</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>d59a5a15-0c7b-4184-96a1-b83302628491++1656</key>
+		<string>https://subversion.assembla.com/svn/bloodregistry</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://subversion.assembla.com/svn/bloodregistry/trunk/BloodRegistryIphone/BloodLine.xcodeproj</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>d59a5a15-0c7b-4184-96a1-b83302628491++1656</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>d59a5a15-0c7b-4184-96a1-b83302628491++1656</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BloodRegistryIphone_25Jan2015</string>
+		</dict>
+	</array>
+</dict>
+</plist>

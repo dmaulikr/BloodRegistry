@@ -1,0 +1,426 @@
+//
+//  BLDLineRegisterViewController.m
+//  BloodLine
+//
+//  Created by Avinash Kawade on 01/03/14.
+//  Copyright (c) 2014 Avinash Kawade. All rights reserved.
+//
+
+#import "BLDLineRegisterViewController.h"
+#import  "QuartzCore/QuartzCore.h"
+#import "BLDLineUrlInvoker.h"
+#import "BLDLineAppDelegate.h"
+#import "GAIDictionaryBuilder.h"
+
+#define kTitleTag 1000
+
+@interface BLDLineRegisterViewController (){
+    BOOL isAnimating;
+}
+
+
+@end
+
+@implementation BLDLineRegisterViewController
+@synthesize bloodTypeListArray;
+
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+     self.screenName = @"Registration";
+	// Do any additional setup after loading the view.
+    
+    self.bloodTypeListArray  = [[NSMutableArray alloc]initWithObjects:@"AB +ve",@"AB -ve",@"A +ve",@"A -ve",@"B +ve",@"B -ve",@"O +ve",@"O -ve", nil];
+    
+    
+    self.bloodTypeListDictionay = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"AB+",@"AB +ve",@"AB-",@"AB -ve",@"A+",@"A +ve",@"A-",@"A -ve",@"B+",@"B +ve",@"B-",@"B -ve",@"O+",@"O +ve",@"O-",@"O -ve",nil];
+    
+    [self.regBloodTypeList setHidden:YES];
+    self.regBloodTypeList.layer.borderWidth = 1;
+    self.regBloodTypeList.layer.cornerRadius = 5;
+    self.regBloodTypeList.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    self.phoneNumber.backgroundColor = [UIColor whiteColor];
+    self.registerButton.layer.borderWidth = 1;
+    self.registerButton.layer.cornerRadius = 5;
+    self.registerButton.layer.borderColor = [[UIColor whiteColor] CGColor];
+    
+    self.dropDownButton.layer.borderWidth = 1;
+    self.dropDownButton.layer.cornerRadius = 5;
+    self.dropDownButton.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    
+
+   
+    
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Registration"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+}
+
+
+-(void)logButtonPress:(UIButton *)button{
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    
+    [tracker set:kGAIScreenName value:@"Notify"];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"UX"
+                                                          action:@"touch"
+                                                           label:[button.titleLabel text]
+                                                           value:nil] build]];
+    [tracker set:kGAIScreenName value:nil];
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation
+{
+    
+    
+    currentLocation=newLocation;
+    [self.locationManager stopUpdatingLocation];
+    
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    
+   
+    isAnimating = NO;
+    self.selectedBloodType.placeholder = @"Select blood group";
+
+    self.locationManager = [[CLLocationManager alloc] init];
+    [self.locationManager setDelegate:self];
+    
+    [self.locationManager setDistanceFilter:kCLDistanceFilterNone];
+    [self.locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
+    
+    [self.locationManager startUpdatingLocation];
+    
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    
+    [self.locationManager stopUpdatingHeading];
+    
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+
+    [self.phoneNumber resignFirstResponder];
+
+}
+-(IBAction)dropDownClicked:(id)sender{
+    
+  //  self.selectedBloodType.titleLabel.text = @"Select Blood Group";
+    
+    if (self.regBloodTypeList.isHidden){
+        if(!isAnimating){
+            // CGRect basketBottomFrame =  self.regBloodTypeList.frame;
+            CGRect basketBottomFrame =  CGRectMake(self.regBloodTypeList.frame.origin.x, self.regBloodTypeList.frame.origin.y, self.regBloodTypeList.frame.size.width, 0);
+            // basketBottomFrame.size.height;
+            // basketBottomFrame.origin.y = 300;
+            self.regBloodTypeList.frame = basketBottomFrame;
+            
+            [self.regBloodTypeList setHidden:NO];
+            
+            
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 // other animations here
+                                 int ht   =  basketBottomFrame.size.height + 100;
+                                 isAnimating =YES;
+                                 CGRect basketBottomFrame =  CGRectMake(self.regBloodTypeList.frame.origin.x, self.regBloodTypeList.frame.origin.y, self.regBloodTypeList.frame.size.width, ht);
+                                 
+                                 self.regBloodTypeList.frame = basketBottomFrame;
+                                 
+                                 
+                             }
+                             completion:^(BOOL finished){
+                                 // ... completion stuff
+                                 // self.regBloodTypeList.frame = basketBottomFrame;
+                                 //[self.regBloodTypeList setHidden:NO];
+                                 isAnimating = NO;
+                             }
+             ];
+            
+            
+        }else{}
+    }
+    else{
+        
+        if(!isAnimating){
+            CGRect basketBottomFrame = self.regBloodTypeList.frame;
+            [UIView animateWithDuration:0.2
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 // other animations here
+                                 int ht   =  basketBottomFrame.size.height - 100;
+                                 isAnimating = YES;
+                                 CGRect basketBottomFrame =  CGRectMake(self.regBloodTypeList.frame.origin.x, self.regBloodTypeList.frame.origin.y, self.regBloodTypeList.frame.size.width, ht);
+                                 
+                                 self.regBloodTypeList.frame = basketBottomFrame;
+                                 
+                                 
+                             }
+                             completion:^(BOOL finished){
+                                 // ... completion stuff
+                                 [self.regBloodTypeList setHidden:YES];
+                                 //self.selectedBloodType.titleLabel.text = @"Select Blood Group";
+                                 isAnimating = NO;
+                                 
+                             }
+             ];
+            
+            
+        }else{}
+    }
+}
+
+-(IBAction)registedBtnClicked:(id)sender{
+    
+    [self logButtonPress:(UIButton *)sender];
+
+    //NSString *bldType = [self.selectedBloodType.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *bldType = self.selectedBloodType.text;
+    NSString *bloodTyp = [self.bloodTypeListDictionay objectForKey:bldType];
+
+    if ([self.phoneNumber.text length]!=0 && [bloodTyp length]!=0) {
+        
+        // NSString* bldType = self.selectedBloodType.titleLabel.text;
+        
+        if ([bloodTyp isEqualToString:@"AB+"]) {
+            bloodTyp=@"AB";
+            
+        }else if ([bloodTyp isEqualToString:@"A+"]) {
+            bloodTyp=@"A";
+            
+        }else if ([bloodTyp isEqualToString:@"B+"]) {
+            bloodTyp=@"B";
+        }else if ([bloodTyp isEqualToString:@"O+"]) {
+            bloodTyp=@"O";
+            
+        }
+        
+        
+        // Get the stored data before the view loads
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *device_ID = [defaults objectForKey:@"DeviceToken"];
+        NSString *latitude = [NSString stringWithFormat:@"%f", [currentLocation coordinate].latitude];
+        NSString *longitude = [NSString stringWithFormat:@"%f", [currentLocation coordinate].longitude];
+        NSString *urlString = [NSString stringWithFormat:@"http://qbs-instahack.rhcloud.com/donor?"];
+        NSString *phone = self.phoneNumber.text;
+        
+        
+        NSLog(@"Registration  URl-> %@",urlString);
+        
+        
+        NSMutableDictionary *param = [[NSMutableDictionary alloc] initWithObjectsAndKeys:urlString,@"url", phone,@"phone",bloodTyp,@"bg",longitude,@"lon",latitude,@"lat",device_ID,@"device_id", @"iphone",@"device_type",nil];
+        [[BLDLineUrlInvoker sharedInstance] postRegistrationRequest:param andProcessName:@selector(processRegisterUser:)  requestMethod:@"POST" withObject:self];
+        
+        
+    }
+    
+}
+
+-(void)processRegisterUser:(NSData*)responsedata{
+    
+    NSError *error;
+    
+    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:responsedata options:kNilOptions error:&error];
+    
+    
+    
+    NSString* newStr = [[NSString alloc] initWithData:responsedata
+                        
+                                             encoding:NSUTF8StringEncoding] ;
+    
+    NSLog(@"Response - >%@",dictionary);
+    
+    
+    NSString*msgTitle;
+    NSString *messsage;
+    if ([[dictionary objectForKey:@"status"] isEqualToString:@"success"]) {
+        
+        
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:[dictionary objectForKey:@"user_id"] forKey:@"UserID"];
+        [defaults synchronize];
+        
+        
+        [self dismissViewControllerAnimated:YES completion:nil];
+        msgTitle=@"Registration done!";
+        messsage = @"You are registered sucessfully...";
+        
+    }else {
+        
+        msgTitle=@"Registration Error";
+        messsage = @"Registation failed ...";
+        
+        
+    }
+    UIAlertView *message = [[UIAlertView alloc] initWithTitle:msgTitle
+                                                      message:messsage
+                                                     delegate:nil
+                                            cancelButtonTitle:@"OK"
+                                            otherButtonTitles:nil];
+    [message show];
+    
+    
+    
+}
+
+
+-(void)processUpdateLocation:(NSData*)responsedata{
+    
+    NSError *error;
+    
+    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:responsedata options:kNilOptions error:&error];
+    
+    
+    
+    NSString* newStr = [[NSString alloc] initWithData:responsedata
+                                             encoding:NSUTF8StringEncoding] ;
+    
+    NSLog(@"Response - >%@",newStr);
+    
+    
+    
+    
+}
+-(IBAction)closeBtnlicked:(id)sender{
+    
+[self dismissViewControllerAnimated:YES completion:nil];
+    //[self.view removeFromSuperview];
+    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if ([string isEqualToString:@""])
+    {
+        return YES;
+    }
+    
+    NSCharacterSet *numSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    int charCount = [newString length];
+    
+    
+    if ([newString rangeOfCharacterFromSet:[numSet invertedSet]].location != NSNotFound||  charCount > 12) {
+        return NO;
+    }
+    
+    
+    textField.text = newString;
+    
+    return NO;
+    
+    
+}
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    
+    return [self.bloodTypeListArray count];
+}
+
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        
+        UILabel *title = [[UILabel alloc]init];
+        title.frame = CGRectMake(110, 3, 300, 30);
+        
+        [title setFont:[UIFont boldSystemFontOfSize:15]];
+        title.numberOfLines = 0;
+        
+        title.lineBreakMode = YES;
+        title.text = [self.bloodTypeListArray objectAtIndex:indexPath.row];
+        title.backgroundColor = [UIColor clearColor];
+        title.textColor = [UIColor  blackColor];
+        title.tag = kTitleTag;
+        
+        [cell.contentView addSubview:title];
+    }else
+    {
+        UILabel *title = (UILabel *)[cell.contentView viewWithTag:kTitleTag];
+        title.text = [self.bloodTypeListArray objectAtIndex:indexPath.row];
+        
+    }
+    
+    return cell;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    NSString *selectGrp = [NSString stringWithFormat:@"%@",[self.bloodTypeListArray objectAtIndex:indexPath.row]];
+    self.selectedBloodType.text = selectGrp;
+    
+   // self.selectedBloodType.titleLabel.text = selectGrp;//[self.bloodTypeListArray objectAtIndex:indexPath.row];//codeString;//[self.bloodTypeListArray objectAtIndex:indexPath.row];
+    if (self.regBloodTypeList.isHidden)
+        [self.regBloodTypeList setHidden:NO];
+    else
+        [self.regBloodTypeList setHidden:YES];
+    
+    
+}
+
+- (void)tableView: (UITableView*)tableView willDisplayCell: (UITableViewCell*)cell forRowAtIndexPath: (NSIndexPath*)indexPath
+{
+    
+    //    if (indexPath.row%2 == 0) {
+    //
+    //        [cell setBackgroundColor:[UIColor colorWithRed:235.0/255.0f green:177.0/255.0f blue:155.0/255.0f alpha:1.0f]];
+    //    }else
+    //    {
+    //        
+    //        [cell setBackgroundColor:[UIColor colorWithRed:247.0/255.0f green:247.0/255.0f blue:247.0/255.0f alpha:1.0f]];
+    //    }
+    
+   // [cell setBackgroundColor:[UIColor colorWithRed:209.0/255.0f green:80./255.0f blue:29.0/255.0f alpha:1.0f]];
+    
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+@end
